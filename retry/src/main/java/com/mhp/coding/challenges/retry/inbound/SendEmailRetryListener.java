@@ -9,18 +9,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.listener.RetryListenerSupport;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 
-@Service
+@Component
 public class SendEmailRetryListener extends RetryListenerSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(SendEmailRetryListener.class);
 
-    // TODO: instantiate RetryNotificationHandler
     private RetryNotificationHandler retryNotificationHandler;
+
+    public SendEmailRetryListener(RetryNotificationHandler retryNotificationHandler) {
+        this.retryNotificationHandler = retryNotificationHandler;
+    }
 
     @Override
     public <T, E extends Throwable> void close(RetryContext context, RetryCallback<T, E> callback, Throwable throwable) {
@@ -38,7 +42,7 @@ public class SendEmailRetryListener extends RetryListenerSupport {
                 + emailNotification.getRecipient());
 
 
-        //retryNotificationHandler.retryEmailNotification(retryEmailNotification);
+        retryNotificationHandler.retryEmailNotification(retryEmailNotification);
     }
 
     @Override
@@ -56,7 +60,7 @@ public class SendEmailRetryListener extends RetryListenerSupport {
                 + " to recipient: "
                 + emailNotification.getRecipient());
 
-        //retryNotificationHandler.retryEmailNotification(retryEmailNotification);
+        retryNotificationHandler.retryEmailNotification(retryEmailNotification);
     }
 
     @Override

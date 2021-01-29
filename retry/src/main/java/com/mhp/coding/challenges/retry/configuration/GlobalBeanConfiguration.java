@@ -55,7 +55,9 @@ public class GlobalBeanConfiguration {
         retryPolicy.setMaxAttempts(maxAttempts);
         retryTemplate.setRetryPolicy(retryPolicy);
 
-        retryTemplate.registerListener(new SendEmailRetryListener());
+        retryTemplate.registerListener(
+                new SendEmailRetryListener(
+                        retryNotificationHandler(new RetryPersistenceAdapter())));
 
         return retryTemplate;
     }

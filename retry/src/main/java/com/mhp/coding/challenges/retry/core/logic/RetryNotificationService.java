@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @PropertySource("classpath:config.properties")
 public class RetryNotificationService implements RetryNotificationHandler {
@@ -32,6 +35,16 @@ public class RetryNotificationService implements RetryNotificationHandler {
         } else {
             logger.info("-------- continue");
             retryNotificationSaver.saveRetry(retryEmailNotification);
+        }
+    }
+
+    @Override
+    public void retryAllRemainingEmailNotifications() {
+        logger.info("-------- starting to retry all remaining EmailNotifications");
+
+        List<RetryEmailNotification> retryEmailNotificationArrayList = retryNotificationSaver.findAllRetries();
+        for (RetryEmailNotification retryEmailNotification : retryEmailNotificationArrayList) {
+            // TODO: try to send an email to all recipients in the list, with the amount of remaining retries
         }
     }
 }
